@@ -12,7 +12,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ProductListComponent } from './components/product-list/product-list.component';
 import { CartComponent } from './components/cart/cart.component';
 import { CheckoutComponent } from './components/checkout/checkout.component';
-
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @NgModule({
   declarations: [
@@ -25,7 +25,7 @@ import { CheckoutComponent } from './components/checkout/checkout.component';
     CheckoutComponent
   ],
   imports: [
-    BrowserModule,HttpClientModule,RouterModule,AppRoutingModule,FormsModule,AuthModule
+    BrowserModule,HttpClientModule,RouterModule,AppRoutingModule,FormsModule,AuthModule,NgxPaginationModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -8,7 +8,7 @@
     <button *ngIf="isAdmin" (click)="deleteProduct(product.id)">Delete</button>
   </div>
    -->
-   <div class="product-container">
+   <!-- <div class="product-container">
     <div class="product-card" *ngFor="let product of products">
       <h3 class="product-title">{{ product.title }}</h3>
       <img [src]="product.image" class="product-image" alt="Product Image">
@@ -21,5 +21,24 @@
         <button class="delete-btn" *ngIf="isAdmin" (click)="deleteProduct(product.id)">Delete</button>
       </div>
     </div>
+  </div> -->
+  <div class="product-container">
+    <div class="product-card" *ngFor="let product of products | paginate: { itemsPerPage: itemsPerPage, currentPage: currentPage }">
+      <h3 class="product-title">{{ product.title }}</h3>
+      <img [src]="product.image" class="product-image" alt="Product Image">
+  
+      <p class="product-description">{{ product.description }}</p>
+      <p class="product-price">Price: ${{ product.price }}</p>
+  
+      <div class="product-actions">
+        <button class="add-to-cart" (click)="addToCart(product)">Add to Cart</button>
+        <button class="delete-btn" *ngIf="isAdmin" (click)="deleteProduct(product.id)">Delete</button>
+      </div>
+    </div>
   </div>
+  
+  <!-- Pagination Controls -->
+  <pagination-controls (pageChange)="onPageChange($event)"></pagination-controls>
+
+  
   
