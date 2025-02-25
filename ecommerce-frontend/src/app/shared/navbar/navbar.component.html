@@ -12,6 +12,7 @@
     <div class="logo">ECOM</div>
     <div class="nav-links">
       <a routerLink="/home" class="nav-item">Home</a>
+      <a routerLink="/products" class="nav-item">Products</a>
       <a routerLink="/cart" class="nav-item" *ngIf="authService.isAuthenticated()">Cart</a>
       <a routerLink="/login" class="nav-item" *ngIf="!authService.isAuthenticated()">Login</a>
       <a routerLink="/register" class="nav-item" *ngIf="!authService.isAuthenticated()">Register</a>

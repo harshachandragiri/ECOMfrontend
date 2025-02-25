@@ -10,7 +10,8 @@ import { CartComponent } from '../components/cart/cart.component';
 import { CheckoutComponent } from '../components/checkout/checkout.component';
 
 const routes: Routes = [
-  { path: '', component: HomeComponent }, // Public Home Page
+  { path: '', component: LoginComponent }, // Public Home Page
+  {path:'home', component:HomeComponent},
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'products', component: ProductListComponent, canActivate: [authGuard] }, // Only Authenticated Users
