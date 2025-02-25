@@ -54,6 +54,8 @@
     <input id="product-description" type="text" placeholder="Description" [(ngModel)]="newProduct.description" required />
     <input id="product-price" type="number" placeholder="Price" [(ngModel)]="newProduct.price" required />
     <input id="product-image" type="text" placeholder="Image URL" [(ngModel)]="newProduct.imageUrl" required />
+
+    <input id="product-file" type="file" (change)="handleFileInput($event)" />
     <button id="add-product-button" type="submit">Add Product</button>
 </form>
 
@@ -74,7 +76,7 @@
         <td class="product-price">${{ product.price }}</td>
         <td>
             <button class="edit-product-button" (click)="editProduct(product)">Edit</button>
-            <button class="delete-product-button" (click)="deleteProduct(product._id)">Delete</button>
+            <button class="delete-product-button" (click)="deleteProduct(product.id)">Delete</button>
         </td>
     </tr>
 </table>
@@ -85,7 +87,7 @@
     <input id="edit-product-title" type="text" [(ngModel)]="editingProduct.title" required />
     <input id="edit-product-description" type="text" [(ngModel)]="editingProduct.description" required />
     <input id="edit-product-price" type="number" [(ngModel)]="editingProduct.price" required />
-    <input id="edit-product-image" type="text" [(ngModel)]="editingProduct.imageUrl" required />
+    <input id="edit-product-image" type="text" [(ngModel)]="editingProduct.image" required />
     <button id="update-product-button" type="submit">Update Product</button>
     <button id="cancel-edit-button" type="button" (click)="cancelEdit()">Cancel</button>
 </form>
