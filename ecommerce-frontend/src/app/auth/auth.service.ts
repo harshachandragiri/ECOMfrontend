@@ -91,7 +91,7 @@ export class AuthService {
       const response = await axios.post(`${this.apiUrl}/login`, credentials);
       localStorage.setItem('token', response.data.access_token);
       this.authStatusSource.next(true); // ✅ Update authentication state
-      return true;
+      return response.data.role;
     } catch (error: unknown) {  
       const axiosError = error as AxiosError;  
       console.error('Login failed:', axiosError.response?.data || axiosError.message);

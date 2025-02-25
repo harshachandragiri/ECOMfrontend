@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { Router } from '@angular/router';
+import { jwtDecode } from 'jwt-decode';
 
 @Component({
   selector: 'app-login',
@@ -45,12 +46,11 @@ export class LoginComponent {
     }
   
     try {
-      const success = await this.authService.login({ email: this.email, password: this.password });
-  
-      if (success) {
+      const role = await this.authService.login({ email: this.email, password: this.password });
+      if (role === "admin") {
+        this.router.navigate(['/admin']);
+      } else if(role === "user") {
         this.router.navigate(['/products']);
-      } else {
-        this.errorMessage = 'Invalid email or password';
       }
     } catch (error) {
       console.error("Login error:", error);
