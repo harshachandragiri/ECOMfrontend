@@ -8,6 +8,7 @@ import { authGuard } from './auth.guard'; // Fix guard import
 import { ProductListComponent } from '../components/product-list/product-list.component';
 import { CartComponent } from '../components/cart/cart.component';
 import { CheckoutComponent } from '../components/checkout/checkout.component';
+import { ProfileComponent } from '../components/profile/profile.component';
 
 const routes: Routes = [
   { path: '', component: LoginComponent }, // Public Home Page
@@ -18,6 +19,8 @@ const routes: Routes = [
   { path: 'admin', component: AdminDashboardComponent, canActivate: [authGuard] }, // Only Admins
   { path: 'cart', component: CartComponent },
   { path: 'checkout', component: CheckoutComponent },
+  { path: 'profile', component: ProfileComponent },
+  {path:'admin',component:AdminDashboardComponent},
   
   { path: '**', redirectTo: 'login' }, // Redirect unknown routes to login
 ];

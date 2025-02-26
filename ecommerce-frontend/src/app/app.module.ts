@@ -13,6 +13,7 @@ import { ProductListComponent } from './components/product-list/product-list.com
 import { CartComponent } from './components/cart/cart.component';
 import { CheckoutComponent } from './components/checkout/checkout.component';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { ProfileComponent } from '../app/components/profile/profile.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +23,9 @@ import { NgxPaginationModule } from 'ngx-pagination';
     AdminDashboardComponent,
     ProductListComponent,
     CartComponent,
-    CheckoutComponent
+    CheckoutComponent,
+    ProfileComponent
+   
   ],
   imports: [
     BrowserModule,HttpClientModule,RouterModule,AppRoutingModule,FormsModule,AuthModule,NgxPaginationModule
