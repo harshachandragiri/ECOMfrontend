@@ -94,3 +94,8 @@ tr:hover {
 #cancel-edit-button:hover {
     background-color: #5a6268;
 }
+.deleted {
+    text-decoration: line-through;
+    background-color: #f8f8f8;
+    color: gray;
+}

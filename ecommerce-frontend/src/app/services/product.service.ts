@@ -43,23 +43,33 @@ export class ProductService {
   constructor(private http: HttpClient) {}
 
   // ✅ Fetch all products (API + LocalStorage updates)
-  getProducts(): Observable<any[]> {
+  getProducts(forAdmin: boolean = false): Observable<any[]> {
     return this.http.get<any[]>(this.apiUrl).pipe(
       map((apiProducts) => {
         const storedProducts = JSON.parse(localStorage.getItem('modifiedProducts') || '[]');
-
-        // Merge local updates with API products
+  
+        // Merge API products with stored updates
         let products = apiProducts.map((product) => {
           const localUpdate = storedProducts.find((p: any) => p.id === product.id);
           return localUpdate ? localUpdate : product;
-        }).filter((product) => !product.deleted); // Exclude soft-deleted products
-
+        });
+  
         // Include newly added LocalStorage products
         const newProducts = storedProducts.filter((p: any) => p.id >= 1000);
-        return [...products, ...newProducts];
+  
+        // Combine all products
+        products = [...products, ...newProducts];
+  
+        // ✅ If for user, remove soft-deleted products
+        if (!forAdmin) {
+          products = products.filter((product) => !product.deleted);
+        }
+  
+        return products;
       })
     );
   }
+  
 
   // ✅ Fetch a product by ID (API or LocalStorage)
   getProductById(productId: number): Observable<any> {
