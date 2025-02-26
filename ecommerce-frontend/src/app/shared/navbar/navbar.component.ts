@@ -26,15 +26,19 @@ import { Router } from '@angular/router';
 })
 export class NavbarComponent implements OnInit {
   isAuthenticated = false;
+  isAdmin = false;
 
   constructor(public authService: AuthService, private router: Router) {}
 
   ngOnInit() {
     this.isAuthenticated = this.authService.isAuthenticated();
+    this.isAdmin = this.authService.getUserRole() === 'admin';
+    
 
     // Subscribe to authentication changes
     this.authService.authStatus.subscribe(status => {
       this.isAuthenticated = status;
+      this.isAdmin = this.authService.getUserRole() === 'admin';
     });
   }
 
@@ -42,5 +46,7 @@ export class NavbarComponent implements OnInit {
     this.authService.logout();
     this.isAuthenticated = false;
     this.router.navigate(['/login']); // Redirect to login after logout
+    this.isAdmin = false;
+    this.router.navigate(['/login']); 
   }
 }

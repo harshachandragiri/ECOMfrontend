@@ -84,6 +84,7 @@
         opacity: 1;
     }
 } */
+
 .featured-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -167,7 +168,7 @@
   
   .hero-text {
     position: absolute;
-    top: 530px;
+    top: 680px;
     left: 50%;
     transform: translate(-50%, -50%);
     color: white;
@@ -183,7 +184,7 @@
     padding: 20px;
     width: 80%;
     position: absolute;
-    top: 700px;
+    top: 780px;
     background-color: rgba(137, 43, 226, 0.219);
   }
   .boldtext{
