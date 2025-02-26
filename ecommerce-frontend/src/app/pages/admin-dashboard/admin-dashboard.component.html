@@ -117,7 +117,8 @@
         <th>Price</th>
         <th>Actions</th>
     </tr>
-    <tr *ngFor="let product of products" [ngClass]="{'deleted': isProductDeleted(product.id)}">
+    <tr *ngFor="let product of products" [ngClass]="{'strikethrough': product.deleted}">
+
         <td><img class="product-image" [src]="product.image || product.imageUrl" alt="Product Image" width="50">
 
         <td class="product-title">{{ product.title }}</td>

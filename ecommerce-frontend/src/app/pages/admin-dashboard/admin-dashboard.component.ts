@@ -18,28 +18,53 @@ export class AdminDashboardComponent implements OnInit {
   }
 
   // ✅ Fetch Products (API + LocalStorage Merge)
-  loadProducts() {
-    this.productService.getProducts().subscribe({
-        next: (apiProducts) => {
-            const storedProducts = JSON.parse(localStorage.getItem('customProducts') || '[]');
+//   loadProducts() {
+//     this.productService.getProducts().subscribe({
+//         next: (apiProducts) => {
+//             const storedProducts = JSON.parse(localStorage.getItem('customProducts') || '[]');
 
-            // Normalize stored products: Ensure imageUrl is mapped to image
-            const formattedStoredProducts = storedProducts.map((product: any) => ({
-                ...product,
-                image: product.imageUrl || product.image // ✅ Ensure consistency
-            }));
+//             // Normalize stored products: Ensure imageUrl is mapped to image
+//             const formattedStoredProducts = storedProducts.map((product: any) => ({
+//                 ...product,
+//                 image: product.imageUrl || product.image // ✅ Ensure consistency
+//             }));
 
-            // Merge API & local products, filter out soft-deleted ones
-            this.products = [...apiProducts, ...formattedStoredProducts].filter((p) => !p.deleted);
+//             // Merge API & local products, filter out soft-deleted ones
+//             this.products = [...apiProducts, ...formattedStoredProducts].filter((p) => !p.deleted);
 
-            console.log('Products loaded successfully:', this.products);
-        },
-        error: (err) => {
-            console.error('Error fetching products:', err);
-            alert('Failed to load products. Please try again later.');
-        }
-    });
+//             console.log('Products loaded successfully:', this.products);
+//         },
+//         error: (err) => {
+//             console.error('Error fetching products:', err);
+//             alert('Failed to load products. Please try again later.');
+//         }
+//     });
+// }
+loadProducts() {
+  this.productService.getProducts().subscribe({
+      next: (apiProducts) => {
+          const storedProducts = JSON.parse(localStorage.getItem('customProducts') || '[]');
+
+          console.log("Stored Products (Admin Side) Before Merging:", storedProducts); // ✅ Debugging
+
+          // Normalize stored products (ensure image consistency)
+          const formattedStoredProducts = storedProducts.map((product: any) => ({
+              ...product,
+              image: product.imageUrl || product.image
+          }));
+
+          // 🛑 Admin Side: DO NOT filter out soft-deleted products
+          this.products = [...apiProducts, ...formattedStoredProducts];
+
+          console.log("Products Loaded in Admin Dashboard:", this.products); // ✅ Debugging
+      },
+      error: (err) => {
+          console.error('Error fetching products:', err);
+          alert('Failed to load products. Please try again later.');
+      }
+  });
 }
+
 
 
   // ✅ Add Product (LocalStorage)
@@ -83,23 +108,48 @@ export class AdminDashboardComponent implements OnInit {
 
 
   // ✅ Soft Delete Product (Mark as deleted)
+  // deleteProduct(productId: number) {
+  //   if (confirm('Are you sure you want to delete this product?')) {
+  //     let storedProducts = JSON.parse(localStorage.getItem('customProducts') || '[]');
+
+  //     storedProducts = storedProducts.map((p: any) => 
+  //       p.id === productId ? { ...p, deleted: true } : p
+  //     );
+
+  //     localStorage.setItem('customProducts', JSON.stringify(storedProducts));
+  //     alert('Product deleted successfully!');
+  //     this.loadProducts();
+  //   }
+  // }
   deleteProduct(productId: number) {
     if (confirm('Are you sure you want to delete this product?')) {
-      let storedProducts = JSON.parse(localStorage.getItem('customProducts') || '[]');
+        let storedProducts = JSON.parse(localStorage.getItem('customProducts') || '[]');
 
-      storedProducts = storedProducts.map((p: any) => 
-        p.id === productId ? { ...p, deleted: true } : p
-      );
+        // Soft delete by setting deleted: true
+        storedProducts = storedProducts.map((p: any) => 
+            p.id === productId ? { ...p, deleted: true } : p
+        );
 
-      localStorage.setItem('customProducts', JSON.stringify(storedProducts));
-      alert('Product deleted successfully!');
-      this.loadProducts();
+        localStorage.setItem('customProducts', JSON.stringify(storedProducts));
+        console.log("Updated LocalStorage after delete:", storedProducts); // ✅ Debugging
+
+        alert('Product deleted successfully!');
+        this.loadProducts(); // ✅ Refresh product list
     }
-  }
-  isProductDeleted(productId: number): boolean {
-    const deletedProducts = JSON.parse(localStorage.getItem('deletedProducts') || '[]');
-    return deletedProducts.includes(productId);
 }
+
+
+
+//   isProductDeleted(productId: number): boolean {
+//     const deletedProducts = JSON.parse(localStorage.getItem('deletedProducts') || '[]');
+//     return deletedProducts.includes(productId);
+// }
+isProductDeleted(productId: number): boolean {
+  let storedProducts = JSON.parse(localStorage.getItem('customProducts') || '[]');
+  const product = storedProducts.find((p: any) => p.id === productId);
+  return product ? product.deleted : false;  // ✅ Correctly check the deleted flag
+}
+
 
 
 
