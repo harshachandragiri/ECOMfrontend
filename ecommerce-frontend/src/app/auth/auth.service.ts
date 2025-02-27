@@ -77,10 +77,10 @@ import { BehaviorSubject } from 'rxjs';  // ✅ Import BehaviorSubject for auth 
 })
 export class AuthService {
   private apiUrl = 'http://localhost:8000/auth'; // Backend API URL
-  private authStatusSource = new BehaviorSubject<boolean>(this.hasToken()); 
+  private authStatusSource = new BehaviorSubject<boolean>(this.hasToken());
   authStatus = this.authStatusSource.asObservable(); // ✅ Observable for authentication status
 
-  constructor(private router: Router) {}
+  constructor(private router: Router) { }
 
   private hasToken(): boolean {
     return !!localStorage.getItem('token'); // ✅ Check if token exists
@@ -90,10 +90,15 @@ export class AuthService {
     try {
       const response = await axios.post(`${this.apiUrl}/login`, credentials);
       localStorage.setItem('token', response.data.access_token);
+
+      // ✅ Decode token and store userId
+      const decodedToken: any = jwtDecode(response.data.access_token);
+      localStorage.setItem('userId', decodedToken.id); // Store userId
+
       this.authStatusSource.next(true); // ✅ Update authentication state
       return response.data.role;
-    } catch (error: unknown) {  
-      const axiosError = error as AxiosError;  
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
       console.error('Login failed:', axiosError.response?.data || axiosError.message);
       return false;
     }
@@ -103,15 +108,19 @@ export class AuthService {
     try {
       await axios.post(`${this.apiUrl}/register`, userData);
       return true;
-    } catch (error: unknown) {  
-      const axiosError = error as AxiosError;  
+    } catch (error: unknown) {
+      const axiosError = error as AxiosError;
       console.error('Registration failed:', axiosError.response?.data || axiosError.message);
       return false;
     }
   }
 
   logout() {
+    localStorage.removeItem('profileImage');  // ✅ Remove stored profile image
+    localStorage.removeItem('userDetails');   // ✅ Remove stored user detailsF
     localStorage.removeItem('token');
+    localStorage.removeItem('userId');
+
     this.authStatusSource.next(false); // ✅ Notify subscribers that user logged out
     this.router.navigate(['/login']);
   }
@@ -143,6 +152,9 @@ export class AuthService {
       console.error('Error decoding token:', error);
       return null;
     }
+  }
+  getUserId(): string | null {
+    return localStorage.getItem('userId'); // ✅ Retrieve userId from localStorage
   }
 }
 

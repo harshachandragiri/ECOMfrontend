@@ -10,11 +10,15 @@ export class AdminDashboardComponent implements OnInit {
   products: any[] = [];
   newProduct = { title: '', description: '', price: 0, imageUrl: '' };
   editingProduct: any = null;
+  selectedDateFormat: string = localStorage.getItem('selectedDateFormat') || 'medium';
 
   constructor(private productService: ProductService) {}
 
   ngOnInit() {
     this.loadProducts();
+  }
+  updateDateFormat() {
+    localStorage.setItem('selectedDateFormat', this.selectedDateFormat);
   }
 
   // ✅ Fetch Products (API + LocalStorage Merge)
@@ -42,29 +46,38 @@ export class AdminDashboardComponent implements OnInit {
 // }
 loadProducts() {
   this.productService.getProducts().subscribe({
-      next: (apiProducts) => {
-          const storedProducts = JSON.parse(localStorage.getItem('customProducts') || '[]');
+    next: (apiProducts) => {
+      const storedProducts = JSON.parse(localStorage.getItem('customProducts') || '[]');
 
-          console.log("Stored Products (Admin Side) Before Merging:", storedProducts); // ✅ Debugging
+      console.log("Stored Products (Admin Side) Before Merging:", storedProducts); // ✅ Debugging
 
-          // Normalize stored products (ensure image consistency)
-          const formattedStoredProducts = storedProducts.map((product: any) => ({
-              ...product,
-              image: product.imageUrl || product.image
-          }));
+      // Normalize stored products (ensure image consistency & set default date)
+      const formattedStoredProducts = storedProducts.map((product: any) => ({
+        ...product,
+        image: product.imageUrl || product.image,
+        createdAt: product.createdAt ? product.createdAt : this.getDefaultDate(), // ✅ Set default date if missing
+        formattedDate: new Date(product.createdAt || this.getDefaultDate()).toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }) // ✅ Format date
+      }));
 
-          // 🛑 Admin Side: DO NOT filter out soft-deleted products
-          this.products = [...apiProducts, ...formattedStoredProducts];
+      // 🛑 Admin Side: DO NOT filter out soft-deleted products
+      this.products = [...apiProducts, ...formattedStoredProducts];
 
-          console.log("Products Loaded in Admin Dashboard:", this.products); // ✅ Debugging
-      },
-      error: (err) => {
-          console.error('Error fetching products:', err);
-          alert('Failed to load products. Please try again later.');
-      }
+      console.log("Products Loaded in Admin Dashboard:", this.products); // ✅ Debugging
+    },
+    error: (err) => {
+      console.error('Error fetching products:', err);
+      alert('Failed to load products. Please try again later.');
+    }
   });
 }
 
+// Function to get default date (Yesterday at 10:00 AM IST)
+getDefaultDate(): string {
+  const now = new Date();
+  now.setDate(now.getDate() - 1); // Set to yesterday
+  now.setHours(10, 0, 0, 0); // Set time to 10:00 AM IST
+  return now.toISOString(); // Convert to ISO format
+}
 
 
   // ✅ Add Product (LocalStorage)
@@ -86,25 +99,19 @@ loadProducts() {
       title: this.newProduct.title.trim(),
       description: this.newProduct.description.trim(),
       price: parseFloat(this.newProduct.price.toString()),
-      image: this.newProduct.imageUrl.trim()  // Ensure imageUrl is stored as 'image'
+      image: this.newProduct.imageUrl.trim(),  // Ensure imageUrl is stored as 'image'
+      createdAt: new Date().toISOString() // ✅ Store timestamp
     };
     
-  
-
     console.log("Adding Product:", newProduct); // ✅ Debugging
 
     storedProducts.push(newProduct);
     localStorage.setItem('customProducts', JSON.stringify(storedProducts));
 
     alert('Product added successfully!');
-
-    // ✅ Reset form fields properly
     this.newProduct = { title: '', description: '', price: 0, imageUrl: '' };
-;
-
     this.loadProducts();
 }
-
 
 
   // ✅ Soft Delete Product (Mark as deleted)

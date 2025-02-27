@@ -106,6 +106,15 @@
     <button id="add-product-button" type="submit">Add Product</button>
 </form>
 
+<!-- Date Format Selector
+<label for="date-format">Select Date Format: </label>
+<select id="date-format" [(ngModel)]="selectedDateFormat">
+    <option value="short">Short</option>
+    <option value="medium">Medium</option>
+    <option value="long">Long</option>
+    <option value="fullDate">Full Date</option>
+</select> -->
+
 
 <!-- Display Products -->
 <h3 id="product-list-title">Products List</h3>
@@ -115,6 +124,7 @@
         <th>Title</th>
         <th>Description</th>
         <th>Price</th>
+        <th>Date Added</th>
         <th>Actions</th>
     </tr>
     <tr *ngFor="let product of products" [ngClass]="{'strikethrough': product.deleted}">
@@ -124,6 +134,7 @@
         <td class="product-title">{{ product.title }}</td>
         <td class="product-description">{{ product.description }}</td>
         <td class="product-price">${{ product.price }}</td>
+        <td>{{ product.createdAt | date: selectedDateFormat }}</td>
         <td>
             <button class="edit-product-button" (click)="editProduct(product)">Edit</button>
             <button class="delete-product-button" (click)="deleteProduct(product.id)">Delete</button>
